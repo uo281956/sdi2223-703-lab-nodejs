@@ -35,15 +35,20 @@ app.set('connectionStrings', url);
 
 const userSessionRouter = require('./routes/userSessionRouter');
 const userAudiosRouter = require('./routes/userAudiosRouter');
+const commentsRouter = require('./routes/commentsRouter');
 app.use("/songs/add",userSessionRouter);
 app.use("/publications",userSessionRouter);
 app.use("/audios/",userAudiosRouter);
-app.use("/shop/",userSessionRouter)
+app.use("/shop/",userSessionRouter);
+app.use("/comments/",commentsRouter);
 
 let songsRepository = require("./repositories/songsRepository.js");
+let commentsRepository = require("./repositories/commentsRepository.js");
 songsRepository.init(app, MongoClient);
-require("./routes/songs.js")(app,songsRepository);
+commentsRepository.init(app, MongoClient);
+require("./routes/songs.js")(app,songsRepository,commentsRepository);
 require("./routes/authors.js")(app);
+require("./routes/comments")(app,commentsRepository);
 
 const usersRepository = require("./repositories/usersRepository.js");
 usersRepository.init(app, MongoClient);
