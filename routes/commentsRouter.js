@@ -4,11 +4,7 @@ const commentsRouter = express.Router();
 commentsRouter.use(function (req, res, next) {
     console.log("routerAudios");
     if ( req.session.user ) {
-        if (req.body.text != null && typeof (req.body.text) != "undefined" && req.body.text.trim().length != 0) {
-            next();
-        } else {
-            res.send("El mensaje no es válido");
-        }
+        next();
     } else {
         res.send("No se ha iniciado sesión")
     }

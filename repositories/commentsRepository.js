@@ -43,5 +43,21 @@ module.exports = {
         } catch (error) {
             throw (error);
         }
+    },
+    removeComment: function (filter, callbackFunction) {
+        this.mongoClient.connect(this.app.get('connectionStrings'), function (err, dbClient) {
+            if (err) {
+                callbackFunction(null)
+            } else {
+                let options = {};
+                const database = dbClient.db("musicStore");
+                const collectionName = 'comments';
+                const commentsCollection = database.collection(collectionName);
+                commentsCollection.remove(filter,options)
+                    .then(result => callbackFunction("deleted"))
+                    .then(() => dbClient.close())
+                    .catch(err => callbackFunction(null));
+            }
+        });
     }
 };
