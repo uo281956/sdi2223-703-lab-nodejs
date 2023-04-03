@@ -13,7 +13,7 @@ module.exports = function (app, usersRepository) {
     let securePassword = app.get("crypto").createHmac('sha256',app.get('clave')).update(req.body.password).digest('hex');
     let user = {email:req.body.email, password: securePassword}
     usersRepository.insertUser(user).then(userId => {
-      res.send('Usuario registrado' + userId);
+      res.redirect("users/login");
     }).catch(error => {
       res.send("Error al insertar usuario");
     });
@@ -31,7 +31,7 @@ module.exports = function (app, usersRepository) {
         res.send("Usuario no identificado");
       } else {
         req.session.user = user.email;
-        res.send("Usuario identificado correctamente: "+user.email);
+        res.redirect("/publications");
       }
     }).catch(error => {
       req.session.user = null;
