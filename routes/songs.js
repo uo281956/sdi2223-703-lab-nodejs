@@ -128,15 +128,41 @@ module.exports = function (app, songsRepository, commentsRepository) {
         }
     }
 
+    function userCanBuySong(user, songId, func) {
+        let filter = {user: user, songId:songId};
+        let fil = {_id:songId, author:user};
+        let options = {};
+        songsRepository.findSong(fil,options).then(song =>{
+            if(song==null) {
+                console.log("asd");
+                songsRepository.getPurchases(filter,options).then(songs => {
+                    if(songs.length!=0) {
+                        func(false);
+                    } else {
+                        func(true);
+                    }
+                }).catch(error => {
+                    func(false);
+                });
+            } else {
+                func(false);
+            }
+        }).catch(error => {
+            func(false);
+        })
+    }
+
     app.get('/songs/:id', function (req, res) {
         let filter = {_id: ObjectId(req.params.id)};
         let options = {};
         songsRepository.findSong(filter, options).then(song => {
-            let filt = {song_id: ObjectId(req.params.id)};
-            commentsRepository.getComments(filt, options).then(comments => {
-                res.render("songs/song.twig", {song: song, comments: comments});
-            }).catch(error => {
-                res.render("songs/song.twig", {song: song});
+            userCanBuySong(req.session.user,song._id,function (canBuy) {
+                let filt = {song_id: ObjectId(req.params.id)};
+                commentsRepository.getComments(filt, options).then(comments => {
+                    res.render("songs/song.twig", {song: song, comments: comments, canBuy: canBuy});
+                }).catch(error => {
+                    res.render("songs/song.twig", {song: song, canBuy: canBuy});
+                });
             });
         }).catch(error => {
             res.send("Se ha producido un error al buscar la canción" + error);
@@ -201,13 +227,23 @@ module.exports = function (app, songsRepository, commentsRepository) {
             user: req.session.user,
             songId: songId
         }
-        songsRepository.buySong(shop, function (shopId) {
-            if (shopId == null) {
-                res.send("Error al realizar la compra");
-            } else {
-                res.redirect("/purchases")
-            }
-        })
+       userCanBuySong(req.session.user,songId,function(canBuy) {
+           if(canBuy) {
+               songsRepository.buySong(shop, function (shopId) {
+                   if (shopId == null) {
+                       res.send("Error al realizar la compra");
+                   } else {
+                       res.redirect("/purchases")
+                   }
+               })
+           } else {
+               let error = {
+                   status: "No se puede comprar esta canción",
+                   stack: "Es posible que seas el dueño de esta canción o ya la hayas comprado anteriormente"
+               };
+               res.render("error.twig", {message: "Error al comprar canción", error:error});
+           }
+       });
     });
     app.get('/purchases', function (req, res) {
         let filter = {user: req.session.user};
