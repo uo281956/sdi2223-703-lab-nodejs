@@ -50,11 +50,14 @@ app.use("/songs/delete",userAuthorRouter);
 
 let songsRepository = require("./repositories/songsRepository.js");
 let commentsRepository = require("./repositories/commentsRepository.js");
+
 songsRepository.init(app, MongoClient);
 commentsRepository.init(app, MongoClient);
+
 require("./routes/songs.js")(app,songsRepository,commentsRepository);
 require("./routes/authors.js")(app);
 require("./routes/comments")(app,commentsRepository);
+require("./routes/api/songsAPIv1.0.js")(app, songsRepository);
 
 const usersRepository = require("./repositories/usersRepository.js");
 usersRepository.init(app, MongoClient);

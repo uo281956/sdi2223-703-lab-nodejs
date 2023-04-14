@@ -22,15 +22,15 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-//var server = http.createServer(app);
-let path = require('path');
-let privateKey = fs.readFileSync(path.join(__dirname,'certificates/alice.key'), 'utf8');
-let certificate = fs.readFileSync(path.join(__dirname,'certificates/alice.crt'), 'utf8');
-let credentials = {key: privateKey, cert: certificate}
+var server = http.createServer(app); //esta
+//let path = require('path');
+//let privateKey = fs.readFileSync(path.join(__dirname,'certificates/alice.key'), 'utf8');
+//let certificate = fs.readFileSync(path.join(__dirname,'certificates/alice.crt'), 'utf8');
+//let credentials = {key: privateKey, cert: certificate}
 
-let server = http.createServer(app);
-let httpsServer = https.createServer(credentials, app);
-httpsServer.listen(4000);
+//let server = http.createServer(app);
+//let httpsServer = https.createServer(credentials, app);
+//httpsServer.listen(4000);
 
 /**
  * Listen on provided port, on all network interfaces.
