@@ -138,7 +138,7 @@ module.exports = function (app, songsRepository, usersRepository) {
                     let token = app.get('jwt').sign({
                         user: user.email,
                         time: Date.now()/1000
-                    },"secreto");
+                    },"Secreto");
                     res.status(200);
                     res.json( {
                         message:"usuario autorizado",
