@@ -173,9 +173,9 @@ module.exports = function (app, songsRepository, usersRepository) {
                 kind : req.body.kind,
                 price: req.body.price
             }
-
             validatorUpdateSong(songChecker, function(errors) {
                 if(errors.length != 0) {
+                    console.log("asd");
                     res.status(422);
                     res.json({errors:errors});
                 }else {
