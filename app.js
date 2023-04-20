@@ -64,6 +64,9 @@ app.use("/songs/delete",userAuthorRouter);
 const userTokenRouter = require('./routes/userTokenRouter');
 app.use("/api/v1.0/songs/", userTokenRouter);
 
+//const userAPICheckRouter = require('./routes/userAPICheckRouter');
+//app.use("/api/v1.0/songs/:id", userAPICheckRouter);
+
 let songsRepository = require("./repositories/songsRepository.js");
 let commentsRepository = require("./repositories/commentsRepository.js");
 const usersRepository = require("./repositories/usersRepository.js");
